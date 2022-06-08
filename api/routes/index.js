@@ -6,7 +6,7 @@ const turmas = require('./turmasRoute')
 
 module.exports = app => {
     app.use(
-    bodyParser.urlencoded({ extended: false}),
+    bodyParser.json(),
     pessoas,
     niveis,
     turmas
