@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Turmas.hasMany(models.Matriculas, {
-        foreignKey: 'turma_id'
+        foreignKey: ''
       })
       Turmas.belongsTo(models.Pessoas, { //pertenca a
         foreignKey: 'docente_id'

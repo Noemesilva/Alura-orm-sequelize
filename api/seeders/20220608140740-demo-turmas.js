@@ -36,5 +36,5 @@ module.exports = {
           return queryInterface.bulkDelete('Turmas', null, {})
     }
   }
-  
+
   

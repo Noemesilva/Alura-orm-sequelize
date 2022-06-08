@@ -5,8 +5,8 @@ const router = Router()
 
 
 router.get('/niveis', NivelController.pegaTodosOsNiveis)
-router.get('/niveis/:id', NivelController.PegaUmNivel)
-router.post('/niveis/', NivelController.criarNivel)
+router.get('/niveis/:id', NivelController.pegaUmNivel)
+router.post('/niveis/', NivelController.criaNivel)
 router.put('/niveis/:id', NivelController.atualizaNivel)
 router.delete('/niveis/:id', NivelController.apagaNivel)
 
