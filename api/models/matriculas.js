@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+  
   class Matriculas extends Model {
     /**
      * Helper method for defining associations.
@@ -21,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Matriculas.init({
     status: DataTypes.STRING
-  }, {
+  }, {paranoid: true,
     sequelize,
     modelName: 'Matriculas',
   });
