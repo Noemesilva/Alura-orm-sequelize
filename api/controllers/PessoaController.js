@@ -1,12 +1,15 @@
 //const { json } = require('express/lib/response')
-const { status } = require('express/lib/response')
-const database = require('../models')
-//const Pessoas = require('../../models/pessoas')
+//const { status } = require('express/lib/response')
+//const database = require('../models')
+//const Sequelize = require('sequelize')
+
+const Services = require('../services/Services')
+const pessoasServices = new Services('Pessoas')
 
 class PessoaController {
   static async pegaPessoasAtivas(req, res) {
     try {
-      const pessoasAtivas = await database.Pessoas.findAll()
+      const pessoasAtivas = await pessoasServices.pegaTodosOsRegistros()
       return res.status(200).json(pessoasAtivas)
 
     } catch(error) {
@@ -168,12 +171,51 @@ class PessoaController {
           where: {
             turma_id: Number(turmaId),
             status: 'confirmado'
-          }
+          },
+          limit: 20,
+          order: [['estudante_id', 'DESC']]
         })
         return res.status(200).json(todasAsMatriculas)
         
 
       } catch(error) {
+        return res.status(500).json(error.message)
+      }
+    }
+
+    static async pegaTurmasLotadas(req, res) {
+      const lotacaoTurma = 2
+      try {
+        const turmasLotadas = await database.Matriculas.findAndCountAll( {
+          where: {
+            status: 'confirmado'
+          },
+          attributes: [ 'turma_id'],
+          group: ['turma_id'],
+          having: Sequelize.literal(`count(turma_id) >= ${lotacaoTurma}`)
+        })
+        
+        return res.status(200).json(turmasLotadas.count)
+        
+
+      } catch(error) {
+        return res.status(500).json(error.message)
+      }
+    }
+
+    static async cancelaPessoa(req, res) {
+      const { estudanteId } = req.params
+      try {
+        database.sequelize.transaction(async transacao =>{
+          await database.Pessoas
+              .update({ ativo: false }, { where: { id: Number(estudanteId)}}, {
+                transaction: transacao})
+              await database.Matriculas
+              .update( { status: 'cancelado'}, { where: { estudante_id: Number(estudanteId)}}, {
+                transaction: transacao})
+          return res.status(200).json({ message: `matrículas ref. estudante ${estudanteId} canceladas`})
+          })
+       } catch(error) {
         return res.status(500).json(error.message)
       }
     }
