@@ -3,13 +3,13 @@
 //const database = require('../models')
 //const Sequelize = require('sequelize')
 
-const Services = require('../services/Services')
-const pessoasServices = new Services('Pessoas')
+const { PessoasServices} = require('../services')
+const pessoasServices = new PessoasServices()
 
 class PessoaController {
   static async pegaPessoasAtivas(req, res) {
     try {
-      const pessoasAtivas = await pessoasServices.pegaTodosOsRegistros()
+      const pessoasAtivas = await pessoasServices.pegaRegistrosAtivos()
       return res.status(200).json(pessoasAtivas)
 
     } catch(error) {
@@ -18,7 +18,7 @@ class PessoaController {
   }
   static async pegaTodasAsPessoas(req, res){//não cria uma nova instância de classe, precisa esperar alguns metodos serem resolvidos, para ele devolver a resposta.
       try{ //encontra algum tipo de erro.
-        const todasAsPessoas = await database.Pessoas.scope('todos').findAll()//espera ir no banco e voltar,(findAll) encontar tudo.
+        const todasAsPessoas = await pessoasServices.pegaTodosOsRegistros()//espera ir no banco e voltar,(findAll) encontar tudo.
         return res.status(200).json(todasAsPessoas)
       } catch (error) {
           return res.status(500).json(error.message)
